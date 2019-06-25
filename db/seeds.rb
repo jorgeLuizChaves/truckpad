@@ -6,4 +6,12 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Driver.create({name: 'Lincoln Hawk', age: 33, sex: 'm'})
+Driver.create([{name: 'Lincoln Falcão', age: 33, gender: 'MALE'}, 
+  {name: 'Pedro', age: 60, gender: 'MALE'},
+  {name: 'Bino', age: 65, gender: 'MALE'},
+  {name: 'Jorge - Um brasileiro', age: 65, gender: 'MALE'},
+  {name: 'João Miguel', age: 65, gender: 'MALE'},
+  {name: 'Al Capone', age: 65, gender: 'MALE'},
+  {name: 'Jack Crews', age: 44, gender: 'MALE'},
+  {name: 'Nilson de Paula', age: 38, gender: 'MALE'},
+  {name: 'Diane Ford', age: 42, gender: 'FEMALE'}])
