@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :truck do
-    category { :TYPE_1 }
+    category { :SIMPLE }
     model { "model" }
     brand { "brand" }
     is_loaded { false }

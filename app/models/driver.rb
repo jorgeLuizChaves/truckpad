@@ -6,4 +6,6 @@ class Driver < ApplicationRecord
 
   has_many :driver_license, dependent: :destroy
   has_many :truck, dependent: :destroy
+
+
 end
