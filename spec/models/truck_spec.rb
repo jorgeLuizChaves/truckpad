@@ -6,10 +6,10 @@ RSpec.describe Truck, type: :model do
       expect(build :truck).to be_valid
     end
 
-    it 'should validate the presence of type' do
-      truck = build :truck, type: nil
+    it 'should validate the presence of category' do
+      truck = build :truck, category: nil
       expect(truck).not_to be_valid
-      expect(truck.errors.messages[:type]).to include("can't be blank")
+      expect(truck.errors.messages[:category]).to include("can't be blank")
     end
 
     it 'should validate the presence of driver' do

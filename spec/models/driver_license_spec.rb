@@ -6,10 +6,10 @@ RSpec.describe DriverLicense, type: :model do
       expect(build :driver_license).to be_valid
     end
 
-    it 'should validate the presence of type' do
-      license = build :driver_license, type: nil
+    it 'should validate the presence of category' do
+      license = build :driver_license, category: nil
       expect(license).not_to be_valid
-      expect(license.errors.messages[:type]).to include("can't be blank")
+      expect(license.errors.messages[:category]).to include("can't be blank")
     end
 
     it 'should validate the presence of expiration_date' do

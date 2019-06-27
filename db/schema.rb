@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(version: 2019_06_25_134529) do
 
   create_table "driver_licenses", force: :cascade do |t|
-    t.string "type"
+    t.string "category"
     t.date "expiration_date"
     t.integer "driver_id"
     t.datetime "created_at", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_134529) do
   end
 
   create_table "trucks", force: :cascade do |t|
-    t.string "type"
+    t.string "category"
     t.string "model"
     t.string "brand"
     t.boolean "is_loaded"
