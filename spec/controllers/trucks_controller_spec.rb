@@ -32,4 +32,111 @@ RSpec.describe TrucksController, type: :controller do
       end
     end
   end
+  describe "#update" do
+    let(:driver) do
+      create :driver
+    end
+
+    let(:truck) do
+      create :truck, driver: driver
+    end
+
+    let(:json_truck_update) do
+      {
+          driver_id: driver.id,
+          id: truck.id,
+          data: {
+              attributes: {
+                  category: 'TOCO',
+                  model: 'model 2',
+                  brand: 'brand 2',
+                  is_loaded: 'true',
+                  driver_owner: 'true'
+              }
+          }
+      }
+    end
+
+    let(:json_truck_update_fail) do
+      {
+          driver_id: driver.id,
+          id: truck.id,
+          data: {
+              attributes: {
+                  category: nil,
+                  model: 'model 2',
+                  brand: 'brand 2',
+                  is_loaded: 'true',
+                  driver_owner: 'true'
+              }
+          }
+      }
+    end
+
+    let(:json_truck_update_invalid_field_fail) do
+      {
+          driver_id: driver.id,
+          id: truck.id,
+          data: {
+              attributes: {
+                  category: :ABC,
+                  model: 'model 2',
+                  brand: 'brand 2',
+                  is_loaded: 'true',
+                  driver_owner: 'true'
+              }
+          }
+      }
+    end
+
+    context 'when update success' do
+      subject {patch :update, params: json_truck_update}
+      it 'should return http status :ok' do
+        subject
+        expect(response).to have_http_status :ok
+      end
+
+      it 'should return proper json' do
+        subject
+        expect(json_data['attributes']).to include({
+            'model' => 'model 2',
+            'brand' => 'brand 2',
+            'category' => 'TOCO',
+            'is_loaded' => true,
+            'driver_owner' => true
+        })
+
+      end
+    end
+    context 'when update fails' do
+      subject {put :update, params: json_truck_update_fail}
+      it 'should return status code 422' do
+        subject
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it 'should return proper json' do
+        subject
+        expect(json_errors).to include({
+            "source" => { "pointer" => "/data/attributes/category" },
+            "detail" => "can't be blank"
+        })
+      end
+    end
+    context 'when update has invalid fields' do
+      subject {put :update, params: json_truck_update_invalid_field_fail}
+      it 'should return status code 422' do
+        subject
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it 'should return proper json' do
+        subject
+        expect(json_errors).to include({
+            "source" => { "pointer" => "/data/attributes/category" },
+            "detail" => "This truck category isn't valid"
+        })
+      end
+    end
+  end
 end
