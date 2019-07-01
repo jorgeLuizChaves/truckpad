@@ -1,5 +1,6 @@
 class TrucksController < ApplicationController
   class TruckNotFound < StandardError; end
+  class DriverNotFoundError < StandardError; end
   def index
     trucks = Truck.find_by(driver_id: driver_id)
     raise TruckNotFound unless trucks
@@ -9,11 +10,20 @@ class TrucksController < ApplicationController
   end
 
   def update
-    truck = Truck.find_by(id: truck_id)
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    truck = Truck.find_by(id: truck_id, driver_id: driver.id)
     truck.update_attributes!(truck_params)
     render json: serializer(truck), status: :ok
+  rescue DriverNotFoundError => e
+    render json: {}, status: :not_found
   rescue
     render json: unprocessable_entity_errors(truck), status: :unprocessable_entity
+  end
+
+  def report
+    trucks = report_query
+    render json: serializer(trucks), status: :ok
   end
 
   private
@@ -46,5 +56,15 @@ class TrucksController < ApplicationController
       end
     end
     { 'errors' => errors}
+  end
+
+  def report_query
+    trucks = Truck.where(driver_owner: params[:driver_owner])
+        .or(Truck.where(category: params[:category]))
+        .or(Truck.where(model: params[:model]))
+        .or(Truck.where(brand: params[:brand]))
+                 .page(page).per(per_page)
+    trucks = Truck.page(page).per(per_page) unless trucks.count > 0
+    trucks
   end
 end

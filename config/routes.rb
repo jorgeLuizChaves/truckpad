@@ -6,4 +6,6 @@ Rails.application.routes.draw do
     resources :trucks, only: [:index, :create, :update]
     resources :driver_licenses, only: [:index, :create, :update], :path => "licenses"
   end
+
+  get '/trucks', to: 'trucks#report'
 end

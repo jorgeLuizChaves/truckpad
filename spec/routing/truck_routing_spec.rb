@@ -16,4 +16,8 @@ RSpec.describe '', :type => :routing do
     truck_id = 1
     expect(put "/drivers/#{driver_id}/trucks/#{truck_id}").to route_to('trucks#update', driver_id: "#{driver_id}", id: "#{truck_id}")
   end
+
+  it 'should /trucks' do
+    expect(get '/trucks').to route_to('trucks#report')
+  end
 end

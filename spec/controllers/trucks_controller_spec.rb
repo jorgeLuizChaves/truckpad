@@ -89,6 +89,22 @@ RSpec.describe TrucksController, type: :controller do
       }
     end
 
+    let(:json_truck_invalid_user) do
+      {
+          driver_id: 99,
+          id: truck.id,
+          data: {
+              attributes: {
+                  category: :ABC,
+                  model: 'model 2',
+                  brand: 'brand 2',
+                  is_loaded: 'true',
+                  driver_owner: 'true'
+              }
+          }
+      }
+    end
+
     context 'when update success' do
       subject {patch :update, params: json_truck_update}
       it 'should return http status :ok' do
@@ -135,6 +151,55 @@ RSpec.describe TrucksController, type: :controller do
         expect(json_errors).to include({
             "source" => { "pointer" => "/data/attributes/category" },
             "detail" => "This truck category isn't valid"
+        })
+      end
+    end
+    context 'when user is invalid' do
+      subject {put :update, params: json_truck_invalid_user}
+      it 'should return status code 404' do
+        subject
+        expect(response).to have_http_status :not_found
+      end
+    end
+  end
+  describe "#report" do
+    let(:truck_list) do
+      create_list :truck, 3
+    end
+
+    context 'when is doing a report without params' do
+      subject{get :report}
+      it 'should return proper http status code 200' do
+        subject
+        expect(response).to have_http_status :ok
+      end
+
+      it 'should return proper json' do
+        truck_list
+        subject
+        expect(json_data.count).to eq(truck_list.count)
+      end
+    end
+
+    context 'when is doing a report with params' do
+      subject{get :report, params: {driver_owner:true}}
+      it 'should return proper http status code 200' do
+        subject
+        expect(response).to have_http_status :ok
+      end
+
+      it 'should return proper json' do
+        truck_list
+        driver_count = 1
+        create_list :truck, driver_count, driver_owner: true
+        subject
+        expect(json_data.count).to eq(driver_count)
+        expect(json_data[0]['attributes']).to include({
+          "brand" => "brand",
+          "category" => "SIMPLE",
+          "driver_owner" => true,
+          "is_loaded" => false,
+          "model" => "model"
         })
       end
     end
