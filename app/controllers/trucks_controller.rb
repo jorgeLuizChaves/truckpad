@@ -2,10 +2,14 @@ class TrucksController < ApplicationController
   class TruckNotFound < StandardError; end
   class DriverNotFoundError < StandardError; end
   def index
-    trucks = Truck.find_by(driver_id: driver_id)
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    trucks = driver.truck
     raise TruckNotFound unless trucks
-    render json: serializer(trucks)
-  rescue
+    options = {}
+    options[:meta] = { total: trucks.count, page: page, per_page: per_page }
+    render json: serializer(trucks, options)
+  rescue => e
     render json: {}, status: :not_found
   end
 
@@ -23,12 +27,14 @@ class TrucksController < ApplicationController
 
   def report
     trucks = report_query
-    render json: serializer(trucks), status: :ok
+    options = {}
+    options[:meta] = { total: trucks.count, page: page, per_page: per_page }
+    render json: serializer(trucks.page(page).per(per_page), options), status: :ok
   end
 
   private
-  def serializer(obj)
-    TruckSerializer.new(obj).serialized_json
+  def serializer(obj, options = {})
+    TruckSerializer.new(obj, options).serialized_json
   end
 
   def driver_id
@@ -63,8 +69,8 @@ class TrucksController < ApplicationController
         .or(Truck.where(category: params[:category]))
         .or(Truck.where(model: params[:model]))
         .or(Truck.where(brand: params[:brand]))
-                 .page(page).per(per_page)
-    trucks = Truck.page(page).per(per_page) unless trucks.count > 0
+                 # .page(page).per(per_page)
+    trucks = Truck.all unless trucks.count > 0
     trucks
   end
 end

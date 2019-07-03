@@ -7,6 +7,10 @@ module JsonApiHelpers
     json['data']
   end
 
+  def json_meta
+    json['meta']
+  end
+
   def json_errors
     json['errors']
   end

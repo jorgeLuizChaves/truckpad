@@ -6,6 +6,8 @@ class Driver < ApplicationRecord
 
   has_many :driver_license, dependent: :destroy
   has_many :truck, dependent: :destroy
+  has_many :rides
 
+  scope :owner_truck, ->(owner) { Driver.joins(:truck).where(trucks: {driver_owner: owner})}
 
 end
