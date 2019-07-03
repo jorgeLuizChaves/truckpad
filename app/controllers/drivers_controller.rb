@@ -4,7 +4,7 @@ class DriversController < ApplicationController
 
   def index
     if params[:owner]
-      drivers = Driver.owner_truck(params[:owner]).page(page).per(per_page)
+      drivers = Driver.owner_truck(params[:owner])
     else
       drivers = Driver.all
     end
