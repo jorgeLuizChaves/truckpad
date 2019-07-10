@@ -1,6 +1,5 @@
 class DriversController < ApplicationController
 
-  class DriverNotFoundError < StandardError; end
 
   def index
     if params[:owner]
@@ -18,27 +17,17 @@ class DriversController < ApplicationController
     raise DriverNotFoundError unless driver
     render json: serializer(driver)
   rescue
-    render json: {}, status: :not_found
+    render status: :not_found
   end
 
   def update
     Driver.transaction do
       driver = Driver.find_by(id: params[:id])
+      raise DriverNotFoundError unless driver
       driver.update_attributes!(driver_params)
-
-      truck = driver.truck.find_by(id: truck_id)
-      truck.update_attributes!(truck_params)
-
-      license = driver.driver_license.find_by(id: license_id)
-      license.update_attributes!(license_params)
-
-      ride = driver.rides.find_by(id: ride_id)
-      ride.update_attributes!(ride_params)
-
       render json: serializer(driver), status: :ok
     rescue => e
-      p e.message
-      render json: {}, status: :unprocessable_entity
+      render json: unprocessable_entity_errors(driver), status: :unprocessable_entity
     end
 
   end
@@ -47,17 +36,19 @@ class DriversController < ApplicationController
     driver = Driver.new(driver_params)
     Driver.transaction do
       driver.save!
-      driver_license = driver.driver_license.build(license_params)
-      truck = driver.truck.build(truck_params)
-      driver_license.save!
-      truck.save!
-      ride = driver.rides.build ride_params
-      ride.save!
       render json: serializer(driver), status: :created
-    rescue => error
-      errors = unprocessable_entity_errors(driver, driver_license, truck, ride)
+    rescue => e
+      errors = unprocessable_entity_errors(driver)
       render json: errors , status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    driver.status = :INACTIVE
+    driver.save!
+    render status: :ok
   end
 
   private
@@ -65,24 +56,13 @@ class DriversController < ApplicationController
     DriverSerializer.new(obj, options).serialized_json
   end
 
+  def driver_id
+    params[:id]
+  end
+
   def driver_params
     params.require(:data).require(:attributes)
         .permit(:name, :age, :gender) 
-  end
-
-  def license_params
-    params.require(:data).require(:attributes).require(:license)
-        .permit(:category, :expiration_date)
-  end
-
-  def truck_params
-    params.require(:data).require(:attributes).require(:truck)
-      .permit(:category, :model, :brand, :is_loaded, :driver_owner)
-  end
-
-  def ride_params
-    params.require(:data).require(:attributes).require(:ride)
-      .permit(:status, :comeback_load, :origin_lat, :origin_lng, :destination_lat, :destination_lng)
   end
 
   def unprocessable_entity_errors(*obj)

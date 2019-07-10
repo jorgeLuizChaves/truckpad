@@ -117,18 +117,6 @@ RSpec.describe DriversController, type: :controller do
       it 'should create an driver' do
         expect{subject}.to change{Driver.count}.by 1 
       end
-
-      it 'should create an driver license' do
-        expect{subject}.to change{DriverLicense.count}.by 1
-      end
-
-      it 'should create an truck' do
-        expect{subject}.to change{Truck.count}.by 1
-      end
-
-      it 'should create a ride' do
-        expect{subject}.to change{Ride.count}.by 1
-      end
     end
 
     context 'when some parameter (driver) is invalid' do
@@ -144,6 +132,13 @@ RSpec.describe DriversController, type: :controller do
         }
       end
 
+      let(:errors) do
+        [
+            {"source"=>{"pointer"=>"/data/attributes/name"}, "detail"=>"can't be blank"},
+            {"source"=>{"pointer"=>"/data/attributes/age"}, "detail"=>"can't be blank"},
+            {"source"=>{"pointer"=>"/data/attributes/gender"}, "detail"=>"can't be blank"}]
+      end
+
       subject { post :create, params: invalid_entity_name}
 
       it 'should return http status code unprocessabe_entity' do
@@ -151,70 +146,11 @@ RSpec.describe DriversController, type: :controller do
         expect(response).to have_http_status :unprocessable_entity
       end
 
-      it 'should return proper json to name' do
+      it 'should return proper json' do
         subject
-        expect(json_errors).to include({
-             "source" => { "pointer" => "/data/attributes/name" },
-             "detail" => "can't be blank"
-         })
-      end
-
-      it 'should return proper json to gender' do
-        subject
-        expect(json_errors).to include({
-          "source" => { "pointer" => "/data/attributes/gender" },
-          "detail" => "can't be blank"
-        })
-      end
-
-      it 'should return proper json to age' do
-        subject
-        expect(json_errors).to include({
-          "source" => { "pointer" => "/data/attributes/age" },
-          "detail" => "can't be blank"
-        })
-      end
-    end
-
-    context 'when some parameter (truck) is invalid' do
-      let(:invalid_entity_truck_category) do
-        {
-            data: {
-                type: 'driver',
-                attributes: {
-                    name: 'name',
-                    age: 35,
-                    gender: 'MALE',
-                    license: {
-                        'category': :C,
-                        'expiration_date': '2020-01-01'
-                    },
-                    truck: {
-                        category: nil,
-                        model: 'model',
-                        brand: 'brand',
-                        is_loaded: true,
-                        driver_owner: true
-                    }
-                }
-            }
-        }
-      end
-
-
-      subject { post :create, params: invalid_entity_truck_category}
-
-      it 'should return http status code unprocessabe_entity' do
-        subject
-        expect(response).to have_http_status :unprocessable_entity
-      end
-
-      it 'should return proper json to name' do
-        subject
-        expect(json_errors).to include({
-          "source" => { "pointer" => "/data/attributes/category" },
-          "detail" => "can't be blank"
-        })
+        errors.each_with_index do |error, index|
+          expect(json_errors[index]).to include(error)
+        end
       end
     end
   end
@@ -245,18 +181,6 @@ RSpec.describe DriversController, type: :controller do
       create :driver
     end
 
-    let(:truck_update) do
-      create :truck, driver: driver_update
-    end
-
-    let(:license_update) do
-      create :driver_license, driver: driver_update
-    end
-
-    let(:ride_update) do
-      create :ride, driver: driver_update
-    end
-
     let(:update_params_valid) do
       {
           id: driver_update.id,
@@ -265,29 +189,7 @@ RSpec.describe DriversController, type: :controller do
               attributes: {
                   name: 'update',
                   age: 88,
-                  gender: :FEMALE,
-                  license: {
-                      id: license_update.id,
-                      'category': :D,
-                      'expiration_date': '2020-01-01'
-                  },
-                  truck: {
-                      id: truck_update.id,
-                      category: :SIMPLE,
-                      model: 'updated',
-                      brand: 'updated',
-                      is_loaded: true,
-                      driver_owner: true
-                  },
-                  ride: {
-                      id: ride_update.id,
-                      status: :IN_PROGRESS,
-                      comeback_load: true,
-                      origin_lat: 9,
-                      origin_lng: 9,
-                      destination_lat: 9,
-                      destination_lng: 9
-                  }
+                  gender: :FEMALE
               }
           }
       }
@@ -308,20 +210,72 @@ RSpec.describe DriversController, type: :controller do
         })
         expect { driver_update.reload }.to change(driver_update, :updated_at)
       end
-
-      it 'should update truck model' do
-        subject
-        expect{truck_update.reload}.to change(truck_update, :updated_at)
+    end
+    context 'when parameters are invalid' do
+      let(:params) do
+        {
+            id: driver_update.id,
+            data: {
+                type: 'driver',
+                attributes: {
+                    name: nil,
+                    age: nil,
+                    gender: nil
+                }
+            }
+        }
       end
 
-      it 'should update license model' do
-        subject
-        expect{license_update.reload}.to change(license_update, :updated_at)
+      let(:errors) do
+        [
+            {"source"=>{"pointer"=>"/data/attributes/name"}, "detail"=>"can't be blank"},
+            {"source"=>{"pointer"=>"/data/attributes/age"}, "detail"=>"can't be blank"},
+            {"source"=>{"pointer"=>"/data/attributes/gender"}, "detail"=>"can't be blank"}
+        ]
       end
 
-      it 'should update ride model' do
+      subject {put :update, params: params}
+
+      it 'should return status code unprocessable entity' do
         subject
-        expect{ride_update.reload}.to change(ride_update, :updated_at)
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it 'should return proper json errors' do
+        subject
+        errors.each_with_index do |error, index|
+          expect(json_errors[index]).to include(error)
+        end
+      end
+    end
+  end
+
+  describe "#destroy" do
+    context 'when delete executes successfully' do
+      let(:driver_destroy_1) do
+        create :driver
+      end
+      subject {delete :destroy, params: {id: driver_destroy_1.id}}
+      it 'should return status code ok' do
+        subject
+        expect(response).to have_http_status :ok
+      end
+
+      it 'should modify status to :INACTIVE' do
+        subject
+        expect { driver_destroy_1.reload }.to change(driver_destroy_1, :status)
+      end
+    end
+
+    context 'when there is no driver to delete' do
+      let(:driver_destroy_2) do
+        create :driver
+      end
+      subject {delete :destroy, params: {id: 99}}
+
+      it 'should return status code not_found' do
+        subject
+        expect(response).to have_http_status :not_found
       end
     end
   end

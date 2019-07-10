@@ -1,13 +1,9 @@
 class DriverLicensesController < ApplicationController
-  class DriverLicenseError < StandardError; end
-  class DriverNotFoundError < StandardError; end
 
   def index
     license = DriverLicense.find_by(driver_id: driver_id)
-    raise DriverLicenseError unless license
+    raise DriverLicenseNotFoundError unless license
     render json: serializer(license)
-  rescue
-    render json: {}, status: :not_found
   end
 
   def create
@@ -17,15 +13,28 @@ class DriverLicensesController < ApplicationController
     license.save!
     render json: license, status: :created
   rescue DriverNotFoundError => e
-    render json: {}, status: :bad_request
+    render status: :bad_request
   rescue ActiveRecord::RecordInvalid => e
     render json: unprocessable_entity_errors(license), status: :unprocessable_entity
   end
 
   def update
-    license = DriverLicense.find_by(id: id, driver_id: driver_id)
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    license = driver.driver_license.find_by(id: id)
+    raise DriverLicenseNotFoundError unless license
     license.update_attributes!(license_params)
     render json: serializer(license), status: :ok
+  end
+
+  def destroy
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    license = driver.driver_license.find_by(id: id)
+    raise DriverLicenseNotFoundError unless license
+    license.disable
+    license.save!
+    render status: :ok
   end
 
   private

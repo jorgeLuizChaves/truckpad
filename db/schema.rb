@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_03_030321) do
+ActiveRecord::Schema.define(version: 2019_07_08_112555) do
 
   create_table "driver_licenses", force: :cascade do |t|
     t.string "category"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_030321) do
     t.integer "driver_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
     t.index ["driver_id"], name: "index_driver_licenses_on_driver_id"
   end
 
@@ -27,6 +28,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_030321) do
     t.string "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
   end
 
   create_table "rides", force: :cascade do |t|

@@ -48,7 +48,157 @@ RSpec.describe TrucksController, type: :controller do
       end
     end
   end
+  describe "#create" do
+    let(:driver) do
+      create :driver
+    end
+    context 'when is successful' do
+      let(:truck) do
+        {
+            driver_id: driver.id,
+            data: {
+                attributes: {
+                    category: :TOCO,
+                    model: 'model',
+                    brand: 'brand',
+                    is_loaded: true,
+                    driver_owner: true
+                }
+            }
+        }
+      end
+      subject {post :create, params: truck}
+      it 'should return status code created' do
+        subject
+        expect(response).to have_http_status :created
+      end
 
+      it 'should return proper json' do
+        subject
+        expect(json_data['attributes']).to include({
+          'category' => 'TOCO',
+          'model' => 'model',
+          'brand' => 'brand',
+          'is_loaded' => true,
+          'driver_owner' => true
+        })
+      end
+    end
+
+    context 'when is invalid request' do
+      let(:params) do
+        {
+            driver_id: driver.id,
+            data: {
+                attributes: {
+                    category: nil,
+                    model: nil,
+                    brand: nil,
+                    is_loaded: nil,
+                    driver_owner: nil
+                }
+            }
+        }
+      end
+
+      let(:errors) do
+        [
+            {"detail" => "can't be blank", "source" => {"pointer" => "/data/attributes/category"}},
+            {"detail" => "is not included in the list", "source" => {"pointer" => "/data/attributes/driver_owner"}}
+        ]
+      end
+
+      subject {post :create, params: params}
+
+      it 'should return status code unprocessable entity' do
+        subject
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it 'should return proper json' do
+        subject
+        errors.each_with_index { |error, index|
+          expect(json_errors[index]).to include(error)
+        }
+
+      end
+    end
+
+    context 'when driver is invalid' do
+      let(:params) do
+        {
+            driver_id: 99,
+            data: {
+                attributes: {
+                    category: :TOCO,
+                    model: 'model',
+                    brand: 'brand',
+                    is_loaded: true,
+                    driver_owner: true
+                }
+            }
+        }
+      end
+      subject {post :create, params: params}
+      it 'should return status code not found' do
+        subject
+        expect(response).to have_http_status :not_found
+      end
+    end
+  end
+  describe "#destroy" do
+    let(:driver) do
+      create :driver
+    end
+
+    let(:truck) do
+      create :truck, driver: driver
+    end
+
+    context 'when request is successful' do
+      let(:params) do
+        {
+            driver_id: driver.id,
+            id: truck.id
+        }
+      end
+
+      subject {delete :destroy, params: params}
+      it 'should return status code ok' do
+        subject
+        expect(response).to have_http_status :ok
+      end
+    end
+    context 'when driver is invalid' do
+      let(:params) do
+        {
+            driver_id: 99,
+            id: truck.id
+        }
+      end
+
+      subject {delete :destroy, params: params}
+
+      it 'should return status code not found' do
+        subject
+        expect(response).to have_http_status :not_found
+      end
+    end
+    context 'when truck is invalid' do
+      let(:params) do
+        {
+            driver_id: driver.id,
+            id: 99
+        }
+      end
+
+      subject {delete :destroy, params: params}
+      it 'should return status code not found' do
+        subject
+        expect(response).to have_http_status :not_found
+      end
+    end
+  end
   describe "#update" do
     let(:driver) do
       create :driver
