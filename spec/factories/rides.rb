@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :ride do
-    status { :IN_PROGRESS }
+    status { :CREATED }
     comeback_load { false }
     origin { "Origin" }
     origin_lat { 1.5 }

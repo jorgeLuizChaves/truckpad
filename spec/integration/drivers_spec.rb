@@ -2,7 +2,6 @@ require 'swagger_helper'
 
 describe 'Drivers API' do
   path '/drivers' do
-
     get 'list all drivers' do
       tags 'Drivers'
       consumes 'application/json'
@@ -11,17 +10,14 @@ describe 'Drivers API' do
       parameter name: :per_page, :in => :query, :type => :Integer, description: 'number of entities per page (default 3)'
 
       response '200', 'list all drivers' do
-        schema type: :object,
-               properties: {
-                   data: {type: :array, items: { type: :object }}
-               }
-          let(:page) {1}
-          let(:per_page) {1}
-          let(:owner) {true}
-          run_test!
+        schema '$ref' => '#/definitions/drivers'
+        let(:drivers) { create_list :driver, 2}
+        let(:page) {1}
+        let(:per_page) {1}
+        let(:owner) {true}
+        run_test!
       end
     end
-
     post 'create driver' do
       tags 'Drivers'
       consumes 'application/json'
@@ -43,6 +39,7 @@ describe 'Drivers API' do
       }
 
       response '201', 'created' do
+        schema '$ref' => '#/definitions/driver'
         let(:data) do
         {
           data: {
@@ -76,6 +73,64 @@ describe 'Drivers API' do
     end
   end
 
+  shared_examples_for 'update_driver' do
+    tags 'Drivers'
+    consumes 'application/json'
+    parameter name: :id, :in => :path, :type => :string, description: 'driver id'
+    parameter name: :data, in: :body,schema: {
+        type: :object,
+        properties: {
+            data: {
+                type: :object,
+                properties: {
+                    attributes: {type: :object,
+                       properties: {
+                         name: {type: :string},
+                         age: {type: :string},
+                         gender: {type: :string}
+                    }}
+                }
+            }
+        }
+    }
+
+    response '422', 'invalid entity to update' do
+      let(:driver) {create :driver}
+      let(:id) {driver.id}
+      let(:data) do
+        {
+          data: {
+            attributes:
+              {
+                name: nil,
+                age: nil,
+                gender: nil
+              }
+          }
+        }
+      end
+      run_test!
+    end
+
+    response '200', 'entity update success' do
+      let(:driver) {create :driver}
+      let(:id) {driver.id}
+      let(:data) do
+        {
+          data: {
+            attributes:
+              {
+                name: 'new-name',
+                age: 99,
+                gender: :FEMALE
+              }
+          }
+        }
+      end
+      run_test!
+    end
+  end
+
   path '/drivers/{id}' do
     get 'get driver by id' do
       tags 'Drivers'
@@ -100,37 +155,7 @@ describe 'Drivers API' do
       end
 
       response '200', 'driver found' do
-        schema type: :object,
-           properties: {
-             data: {type: :object,
-                properties: {
-                    id: {type: :string},
-                    type: {type: :string},
-                    attributes: {type: :object,
-                       properties: {
-                           name: {type: :string},
-                           age: {type: :integer},
-                           gender: {type: :string}
-                       }
-                    },
-                    relationships: {type: :object,
-                      properties: {
-                        driver_license: {type: :object,
-                           properties: {links: {type: :object,
-                              properties: {
-                                  related: {type: :string}
-                              }
-                           },
-                              data: {type: :array, items: { type: :string }
-                              }
-                           }
-                        },
-                        truck: {type: :object}
-                      }
-                    }
-                }
-             }
-           }
+        schema '$ref' => '#/definitions/driver'
 
         let(:driver) {create :driver}
         let(:id) {driver.id}
@@ -138,33 +163,28 @@ describe 'Drivers API' do
       end
     end
 
+    put 'update driver' do
+      it_behaves_like 'update_driver'
+    end
+
     patch 'update driver' do
+      it_behaves_like 'update_driver'
+    end
+
+    delete 'delete driver' do
       tags 'Drivers'
       consumes 'application/json'
       parameter name: :id, :in => :path, :type => :string, description: 'driver id'
 
-
-      response '422', 'invalid entity to update' do
-          let(:driver) {create :driver}
-          let(:id) {driver.id}
-          let(:data) do
-          {
-            data: {
-              attributes:
-                {
-                  name: nil,
-                  age: nil,
-                  gender: nil
-                }
-            }
-          }
-            end
-          # run_test!
+      response '200', 'entity deleted successfully' do
+        let(:driver) {create :driver}
+        let(:id) {driver.id}
+        run_test!
       end
 
-      response '200', 'entity update success' do
-        schema type: :object, properties: {}
-        #run_test!
+      response '404', 'entity not found' do
+        let(:id) {99}
+        run_test!
       end
     end
   end

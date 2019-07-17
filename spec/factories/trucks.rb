@@ -5,6 +5,7 @@ FactoryBot.define do
     brand { "brand" }
     is_loaded { false }
     driver_owner { false }
+    status { :ACTIVE }
     association :driver
   end
 end

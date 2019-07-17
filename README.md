@@ -1,27 +1,72 @@
-# README
+# TruckPad Challenger
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Este projeto é um defasio referente a uma oportunidade na empresa [Truckpad].
 
-Things you may want to cover:
+### Testes Unitários
 
-* Ruby version
+Os testes unitários foram desenvolvidos com o framework [rspec] que faz com que os teste escritos
+fiquem compreensíveis até mesmo por pessoas que não façam parte de tecnologia.
 
-* System dependencies
+#### rodas os testes
 
-* Configuration
+Acesse o diretório do projeto
+```shell
+$ cd truckpad 
+```
 
-* Database creation
+Execute os testes
+```
+$ rspec 
+```
 
-* Database initialization
+![rspec command](rspec.gif)
 
-* How to run the test suite
+---
 
-* Services (job queues, cache servers, search engines, etc.)
+#### Rodar em modo desenvolvimento
 
-* Deployment instructions
+```shell
+$ rails s
+```
 
-* ...
+Agora é só abrir o seu browser e acessar o endereço http://localhost:3000/drivers
+
+---
+
+#### Migrar o banco de dados
+
+````shell
+$ rails db:migrate
+````
+
+---
+
+#### Documentação API
+
+A documentação da API foi desenvolvida utilizando o [swagger] que é uma especificação de API viva. aonde
+os desenvolvedores podem ver os recursos existentes na API, quais são os seu contratos e respostas.
+
+Para escrever a especificação foi utilizado [rspec] e [rswag].
+
+##### configurar rswag no projeto
+````shell
+$ rails g rswag:install
+````
+
+##### gerar documentação atualizada swagger
+
+````shell
+$ rake rswag:specs:swaggerize
+````
+
+
+
+---
 
 https://www.revistacaminhoneiro.com.br/14-filmes-de-caminhoneiro-imperdiveis/
 https://www.revistacaminhoneiro.com.br/relembre-os-cinco-caminhoneiros-mais-famosos-da-tv/
+
+[Truckpad]: <https://www.truckpad.com.br/>
+[rspec]: <https://rspec.info/>
+[swagger]: <https://swagger.io/>
+[rswag]: <https://github.com/domaindrivendev/rswag>
