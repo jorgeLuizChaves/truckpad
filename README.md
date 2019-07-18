@@ -66,6 +66,10 @@ na página da documentação e poderá integrarir com a API e saber os endpoints
 
 ![rspec command](swagger.png)
 
+### Production sample
+
+É possivel testa a aplicação através do endereço [truckpad-challenge]
+
 ### Referências
 
 As referências que eu utilizei para realizar os desafios foram:
@@ -84,3 +88,4 @@ As referências que eu utilizei para realizar os desafios foram:
 [json-api]: <https://jsonapi.org/>
 [rails-documentation]:<https://guides.rubyonrails.org/>
 [rspec]: <https://rspec.info/>
+[truckpad-challenge]: <https://truckpad-challenge.herokuapp.com/drivers>
