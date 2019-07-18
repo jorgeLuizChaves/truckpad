@@ -82,8 +82,7 @@ describe 'Licenses API' do
               }
           }
         end
-
-        # schema
+        schema '$ref' => '#/definitions/license'
         run_test!
       end
 
@@ -119,10 +118,10 @@ describe 'Licenses API' do
                   type: :object,
                   properties: {
                       attributes: {type: :object,
-                                   properties: {
-                                       category: {type: :string},
-                                       expiration_date: {type: :string}
-                                   }}
+                         properties: {
+                             category: {type: :string},
+                             expiration_date: {type: :string}
+                         }}
                   }
               }
           }
@@ -161,6 +160,7 @@ describe 'Licenses API' do
               }
           }
         end
+        schema '$ref' => '#/definitions/license'
         run_test!
       end
     end

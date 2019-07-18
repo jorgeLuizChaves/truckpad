@@ -19,7 +19,49 @@ RSpec.configure do |config|
         title: 'API V1',
         version: 'v1'
       },
-      paths: {}
+      paths: {},
+      definitions:{
+          driver: {
+              type: :object,
+              properties: {
+                  id: {type: :integer},
+                  type: {type: :string},
+                  attributes: {type: :object,
+                     properties: {
+                         name: {type: :string},
+                         age: {type: :integer},
+                         gender: {type: :string}
+                     }}
+              }
+          },
+          license: {
+              type: :object,
+              properties: {
+                  id: {type: :integer},
+                  type: {type: :string},
+                  attributes: {type: :object,
+                     properties: {
+                         category: {type: :string},
+                         expiration_date: {type: :string}
+                     }}
+              }
+          },
+          truck: {
+              type: :object,
+              properties: {
+                  id: {type: :integer},
+                  type: {type: :string},
+                  attributes: {type: :object,
+                               properties: {
+                                   category:  {type: :string},
+                                   model:  {type: :string},
+                                   brand:  {type: :string},
+                                   is_loaded:  {type: :string},
+                                   driver_owner:  {type: :string}
+                               }}
+              }
+          }
+      }
     }
   }
 end

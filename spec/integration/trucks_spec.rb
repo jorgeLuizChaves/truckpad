@@ -23,6 +23,12 @@ describe 'Truck API' do
         let(:truck){create :truck, driver: driver}
         let(:page){nil}
         let(:per_page){nil}
+
+        schema type: :object, properties: {
+            data: { type: :array,
+                    items: { '$ref' => '#/definitions/truck' }
+            }
+        }
         run_test!
       end
     end
@@ -49,6 +55,7 @@ describe 'Truck API' do
               }
           }
         end
+        schema '$ref' => '#/definitions/truck'
         run_test!
       end
 
@@ -80,52 +87,6 @@ describe 'Truck API' do
   end
 
   path '/drivers/{driver_id}/trucks/{id}' do
-    get 'get license by id' do
-      tags 'Trucks'
-      consumes 'application/json'
-      parameter name: :id, :in => :path, :type => :string, description: 'driver id'
-
-      response '404', 'driver not found' do
-        schema type: :object, properties: {}
-          #run_test!
-      end
-      response '200', 'driver found' do
-        schema type: :object,
-               properties: {
-                   data: {type: :object,
-                          properties: {
-                              id: {type: :integer},
-                              type: {type: :string},
-                              attributes: {type: :object,
-                                           properties: {
-                                               "name": {type: :string},
-                                               "age": {type: :integer},
-                                               "gender": {type: :string},
-                                           }
-                              },
-                              relationships: {type: :object,
-                                              properties: {
-                                                  "driver_license": {type: :object,
-                                                                     properties: {links: {type: :object,
-                                                                                          properties: {
-                                                                                              "related": {type: :string}
-                                                                                          }
-                                                                     },
-                                                                                  data: {type: :array, items: { type: 'string' }
-                                                                                  }
-                                                                     }
-                                                  },
-                                                  "truck": {type: :object}
-                                              }
-                              }
-                          }
-                   }
-               }
-        let(:id) { Driver.create(title: 'foo', content: 'bar').id }
-          #run_test!
-      end
-
-    end
 
     shared_examples_for 'update_truck' do
       tags 'Trucks'
@@ -198,7 +159,6 @@ describe 'Truck API' do
       response '404', 'driver not found' do
         let(:driver_id){99}
         let(:id){99}
-        # schema type: :object, properties: {}
         run_test!
       end
 
@@ -207,7 +167,6 @@ describe 'Truck API' do
         let(:truck){create :truck, driver: driver}
         let(:driver_id){driver.id}
         let(:id){99}
-        # schema type: :object, properties: {}
         run_test!
       end
 
@@ -216,7 +175,6 @@ describe 'Truck API' do
         let(:truck){create :truck, driver: driver}
         let(:driver_id){driver.id}
         let(:id){truck.id}
-        # schema type: :object, properties: {}
         run_test!
       end
     end

@@ -10,7 +10,11 @@ describe 'Drivers API' do
       parameter name: :per_page, :in => :query, :type => :Integer, description: 'number of entities per page (default 3)'
 
       response '200', 'list all drivers' do
-        schema '$ref' => '#/definitions/drivers'
+        schema type: :object, properties: {
+            data: { type: :array,
+                items: { '$ref' => '#/definitions/driver' }
+            }
+        }
         let(:drivers) { create_list :driver, 2}
         let(:page) {1}
         let(:per_page) {1}
@@ -18,6 +22,7 @@ describe 'Drivers API' do
         run_test!
       end
     end
+
     post 'create driver' do
       tags 'Drivers'
       consumes 'application/json'
@@ -94,6 +99,7 @@ describe 'Drivers API' do
         }
     }
 
+
     response '422', 'invalid entity to update' do
       let(:driver) {create :driver}
       let(:id) {driver.id}
@@ -127,6 +133,7 @@ describe 'Drivers API' do
           }
         }
       end
+      schema '$ref' => '#/definitions/driver'
       run_test!
     end
   end
@@ -151,7 +158,7 @@ describe 'Drivers API' do
             }
           }
         end
-          run_test!
+        run_test!
       end
 
       response '200', 'driver found' do
@@ -159,6 +166,7 @@ describe 'Drivers API' do
 
         let(:driver) {create :driver}
         let(:id) {driver.id}
+        schema '$ref' => '#/definitions/driver'
         run_test!
       end
     end

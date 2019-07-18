@@ -59,6 +59,14 @@ $ rails g rswag:install
 $ rake rswag:specs:swaggerize
 ````
 
+#### Acessar documentação viva
+
+para acessar a documentação acesse o edereço http://APP_ADDRESS:PORT/api-docs, você estára 
+na página da documentação e poderá integrarir com a API e saber os endpoints disponíveis.
+
+![rspec command](swagger.png)
+
+
 
 
 ---
