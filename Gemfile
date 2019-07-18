@@ -49,7 +49,7 @@ group :development do
 end
 
 group :production do
-  # gem 'pg' #postgres db required by heroku default
+  gem 'pg' #postgres db required by heroku default
 end
 
 
