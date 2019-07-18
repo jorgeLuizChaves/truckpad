@@ -66,15 +66,21 @@ na página da documentação e poderá integrarir com a API e saber os endpoints
 
 ![rspec command](swagger.png)
 
+### Referências
 
-
+As referências que eu utilizei para realizar os desafios foram:
+- [json.org]
+- [json-api]
+- [rails-documentation]
+- [rspec]
 
 ---
-
-https://www.revistacaminhoneiro.com.br/14-filmes-de-caminhoneiro-imperdiveis/
-https://www.revistacaminhoneiro.com.br/relembre-os-cinco-caminhoneiros-mais-famosos-da-tv/
 
 [Truckpad]: <https://www.truckpad.com.br/>
 [rspec]: <https://rspec.info/>
 [swagger]: <https://swagger.io/>
 [rswag]: <https://github.com/domaindrivendev/rswag>
+[json.org]: <http://json.org/>
+[json-api]: <https://jsonapi.org/>
+[rails-documentation]:<https://guides.rubyonrails.org/>
+[rspec]: <https://rspec.info/>
