@@ -1,6 +1,5 @@
 class TrucksController < ApplicationController
-  class TruckNotFound < StandardError; end
-  class DriverNotFoundError < StandardError; end
+
   def index
     driver = Driver.find_by(id: driver_id)
     raise DriverNotFoundError unless driver
@@ -9,20 +8,24 @@ class TrucksController < ApplicationController
     options = {}
     options[:meta] = { total: trucks.count, page: page, per_page: per_page }
     render json: serializer(trucks, options)
-  rescue => e
-    render json: {}, status: :not_found
   end
 
   def update
     driver = Driver.find_by(id: driver_id)
     raise DriverNotFoundError unless driver
-    truck = Truck.find_by(id: truck_id, driver_id: driver.id)
+    truck = driver.truck.find_by(id: truck_id)
     truck.update_attributes!(truck_params)
     render json: serializer(truck), status: :ok
-  rescue DriverNotFoundError => e
-    render json: {}, status: :not_found
-  rescue
+  rescue ActiveRecord::RecordInvalid => e
     render json: unprocessable_entity_errors(truck), status: :unprocessable_entity
+  end
+
+  def destroy
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    truck = driver.truck.find_by(id: truck_id)
+    raise TruckNotFoundError unless truck
+    render status: :ok
   end
 
   def report
@@ -30,6 +33,16 @@ class TrucksController < ApplicationController
     options = {}
     options[:meta] = { total: trucks.count, page: page, per_page: per_page }
     render json: serializer(trucks.page(page).per(per_page), options), status: :ok
+  end
+
+  def create
+    driver = Driver.find_by(id: driver_id)
+    raise DriverNotFoundError unless driver
+    truck = driver.truck.build(truck_params)
+    truck.save!
+    render json: serializer(truck), status: :created
+  rescue ActiveRecord::RecordInvalid
+    render json: unprocessable_entity_errors(truck), status: :unprocessable_entity
   end
 
   private
@@ -69,7 +82,6 @@ class TrucksController < ApplicationController
         .or(Truck.where(category: params[:category]))
         .or(Truck.where(model: params[:model]))
         .or(Truck.where(brand: params[:brand]))
-                 # .page(page).per(per_page)
     trucks = Truck.all unless trucks.count > 0
     trucks
   end

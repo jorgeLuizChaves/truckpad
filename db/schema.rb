@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_03_030321) do
+ActiveRecord::Schema.define(version: 2019_07_11_183235) do
 
   create_table "driver_licenses", force: :cascade do |t|
     t.string "category"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_030321) do
     t.integer "driver_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "ACTIVE"
     t.index ["driver_id"], name: "index_driver_licenses_on_driver_id"
   end
 
@@ -27,15 +28,16 @@ ActiveRecord::Schema.define(version: 2019_07_03_030321) do
     t.string "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "ACTIVE"
   end
 
   create_table "rides", force: :cascade do |t|
-    t.string "status"
+    t.string "status", default: "CREATED"
     t.boolean "comeback_load"
     t.integer "driver_id"
     t.string "origin"
     t.float "origin_lat"
-    t.string "origin_lng"
+    t.float "origin_lng"
     t.string "destination"
     t.float "destination_lat"
     t.float "destination_lng"
@@ -53,6 +55,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_030321) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "driver_id"
+    t.string "status", default: "ACTIVE"
     t.index ["driver_id"], name: "index_trucks_on_driver_id"
   end
 

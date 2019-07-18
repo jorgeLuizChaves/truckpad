@@ -10,4 +10,6 @@ class Driver < ApplicationRecord
 
   scope :owner_truck, ->(owner) { Driver.joins(:truck).where(trucks: {driver_owner: owner})}
 
+  default_scope -> { where(status: :ACTIVE)}
+
 end

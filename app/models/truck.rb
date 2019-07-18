@@ -4,4 +4,6 @@ class Truck < ApplicationRecord
   validates :driver_owner, inclusion: { in: [true, false] }
   validates :driver_owner, exclusion: { in: [nil] }
   validates_with TruckValidator
+
+  default_scope { where(status: :ACTIVE)}
 end

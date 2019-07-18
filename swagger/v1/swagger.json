@@ -1,0 +1,1000 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API V1",
+    "version": "v1"
+  },
+  "paths": {
+    "/drivers": {
+      "get": {
+        "summary": "list all drivers",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "query",
+            "type": "string",
+            "description": "Whether drivers have their own truck"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "Integer",
+            "description": "current page of a result (default 1)"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "type": "Integer",
+            "description": "number of entities per page (default 3)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list all drivers",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/driver"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "create driver",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "age": {
+                          "type": "string"
+                        },
+                        "gender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "schema": {
+              "$ref": "#/definitions/driver"
+            }
+          },
+          "422": {
+            "description": "entity update success"
+          }
+        }
+      }
+    },
+    "/drivers/{id}": {
+      "get": {
+        "summary": "get driver by id",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "driver not found"
+          },
+          "200": {
+            "description": "driver found",
+            "schema": {
+              "$ref": "#/definitions/driver"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "update driver",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "age": {
+                          "type": "string"
+                        },
+                        "gender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "invalid entity to update"
+          },
+          "200": {
+            "description": "entity update success",
+            "schema": {
+              "$ref": "#/definitions/driver"
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update driver",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "age": {
+                          "type": "string"
+                        },
+                        "gender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "invalid entity to update"
+          },
+          "200": {
+            "description": "entity update success",
+            "schema": {
+              "$ref": "#/definitions/driver"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete driver",
+        "tags": [
+          "Drivers"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "entity deleted successfully"
+          },
+          "404": {
+            "description": "entity not found"
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/licenses": {
+      "get": {
+        "summary": "get licenses by driver",
+        "tags": [
+          "Licenses"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "Integer",
+            "description": "current page of a result (default 1)"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "type": "Integer",
+            "description": "number of entities per page (default 3)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "when drivers has no license"
+          },
+          "404": {
+            "description": "when driver is invalid"
+          }
+        }
+      },
+      "post": {
+        "summary": "create driver's license",
+        "tags": [
+          "Licenses"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string"
+                        },
+                        "expiration_date": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "driver's license created",
+            "schema": {
+              "$ref": "#/definitions/license"
+            }
+          },
+          "422": {
+            "description": "error to create driver's license"
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/licenses/{id}": {
+      "delete": {
+        "summary": "delete license by driver",
+        "tags": [
+          "Licenses"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "license id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "license not found"
+          },
+          "200": {
+            "description": "license deleted"
+          }
+        }
+      },
+      "patch": {
+        "summary": "update license",
+        "tags": [
+          "Licenses"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "license id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string"
+                        },
+                        "expiration_date": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "invalid entity to update"
+          },
+          "200": {
+            "description": "entity update success",
+            "schema": {
+              "$ref": "#/definitions/license"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "update license",
+        "tags": [
+          "Licenses"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "license id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string"
+                        },
+                        "expiration_date": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "invalid entity to update"
+          },
+          "200": {
+            "description": "entity update success",
+            "schema": {
+              "$ref": "#/definitions/license"
+            }
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/rides": {
+      "get": {
+        "summary": "get licenses by driver",
+        "tags": [
+          "Rides"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "Integer",
+            "description": "current page of a result (default 1)"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "type": "Integer",
+            "description": "number of entities per page (default 3)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list all rides"
+          }
+        }
+      },
+      "post": {
+        "summary": "create driver license",
+        "tags": [
+          "Rides"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "description": "request body"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "ride created"
+          },
+          "422": {
+            "description": "entity create error",
+            "schema": {
+              "type": "object",
+              "properties": {
+              }
+            }
+          },
+          "404": {
+            "description": "driver not found"
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/rides/{id}": {
+      "patch": {
+        "summary": "update ride",
+        "tags": [
+          "Rides"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "ride id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "description": "request body"
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "update invalid"
+          },
+          "200": {
+            "description": "entity update success"
+          },
+          "404": {
+            "description": "ride invalid"
+          }
+        }
+      },
+      "put": {
+        "summary": "update ride",
+        "tags": [
+          "Rides"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "ride id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "description": "request body"
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "update invalid"
+          },
+          "200": {
+            "description": "entity update success"
+          },
+          "404": {
+            "description": "ride invalid"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete ride",
+        "tags": [
+          "Rides"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "ride id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deleted successful"
+          },
+          "404": {
+            "description": "ride not found"
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/trucks": {
+      "get": {
+        "summary": "get licenses by driver",
+        "tags": [
+          "Trucks"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "Integer",
+            "description": "current page of a result (default 1)"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "type": "Integer",
+            "description": "number of entities per page (default 3)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "when driver has trucks",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/truck"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "create trucks",
+        "tags": [
+          "Trucks"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "schema": {
+              "$ref": "#/definitions/truck"
+            }
+          },
+          "404": {
+            "description": "driver not found"
+          },
+          "422": {
+            "description": "entity update success"
+          }
+        }
+      }
+    },
+    "/drivers/{driver_id}/trucks/{id}": {
+      "patch": {
+        "summary": "update license",
+        "tags": [
+          "Trucks"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "truck id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "entity update success"
+          }
+        }
+      },
+      "put": {
+        "summary": "update license",
+        "tags": [
+          "Trucks"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "truck id",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "entity update success"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete truck",
+        "tags": [
+          "Trucks"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "driver_id",
+            "in": "path",
+            "type": "string",
+            "description": "driver id",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "license id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "truck not found"
+          },
+          "200": {
+            "description": "truck delete"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "driver": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "integer"
+            },
+            "gender": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            },
+            "expiration_date": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "truck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "brand": {
+              "type": "string"
+            },
+            "is_loaded": {
+              "type": "string"
+            },
+            "driver_owner": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
