@@ -4,7 +4,7 @@ class DriverLicense < ApplicationRecord
   validates :expiration_date, presence: true
   validates :driver, presence: true
 
-  default_scope { where("expiration_date >= #{ Time.now.strftime("%F") } and status = 'ACTIVE'")}
+  # default_scope { where("expiration_date >= #{ Time.now.strftime("%F") } and status = 'ACTIVE'")}
 
   def disable
     self.status = :INACTIVE

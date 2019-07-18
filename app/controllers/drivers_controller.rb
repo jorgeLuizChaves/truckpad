@@ -34,13 +34,14 @@ class DriversController < ApplicationController
 
   def create
     driver = Driver.new(driver_params)
-    Driver.transaction do
-      driver.save!
-      render json: serializer(driver), status: :created
+    driver.save!
+    render json: serializer(driver), status: :created
     rescue => e
       errors = unprocessable_entity_errors(driver)
+      p e.message
+      p e
+      p "jorge"
       render json: errors , status: :unprocessable_entity
-    end
   end
 
   def destroy
